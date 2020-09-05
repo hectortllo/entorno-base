@@ -8,5 +8,11 @@
   },
   "keywords": [],
   "author": "Héctor Tello <hectortllo@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-sass": "^4.1.0",
+    "gulp-uglifycss": "^1.1.0"
+  }
 }
