@@ -3,20 +3,27 @@ const sass = require('gulp-sass');
 const uglifycss = require('gulp-uglifycss');
 const browserSync = require('browser-sync');
 const uglify = require('gulp-uglify');
-const pipeline = require('readable-stream').pipeline;
+const imagemin = require('gulp-imagemin');
 
 const files = {
   sassPath: 'src/sass/*.sass',
   cssPath: 'dist/css/*.css',
   cssMinifiedPath: 'dist/css/minified',
   htmlPath: 'dist/*.html',
-  jsspath: 'src/js/*.js'
+  jsspath: 'src/js/*.js',
+  imagePath: 'src/images/image1.jpg'
 }
 
 function jsTask() {
   return src(files.jsspath)
     .pipe(uglify())
     .pipe(dest('dist/js/'));
+}
+
+function imageTask() {
+  return src(files.imagePath)
+    .pipe(imagemin())
+    .pipe(dest('dist/images'))
 }
 
 function compileSASS() {
@@ -37,7 +44,7 @@ function minifyCSS() {
 
 function watchTask() {
   watch(
-    [files.sassPath, files.cssMinifiedPath, files.htmlPath, files.jsspath],
+    [files.sassPath, files.cssMinifiedPath, files.htmlPath, files.jsspath, files.imagePath],
     series(compileSASS, minifyCSS, jsTask, reloadTask)
   )
   console.log('watchTask')
@@ -58,7 +65,7 @@ function reloadTask(d) {
   d();
 }
 
-exports.default = series(compileSASS, minifyCSS, jsTask, serveTask, watchTask)
+exports.default = series(compileSASS, minifyCSS, jsTask, imageTask, serveTask, watchTask)
 
 
 // exports.sass = compileSASS;
