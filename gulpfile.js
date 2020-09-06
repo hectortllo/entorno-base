@@ -2,11 +2,21 @@ const { src, dest, watch, series } = require('gulp');
 const sass = require('gulp-sass');
 const uglifycss = require('gulp-uglifycss');
 const browserSync = require('browser-sync');
+const uglify = require('gulp-uglify');
+const pipeline = require('readable-stream').pipeline;
 
 const files = {
   sassPath: 'src/sass/*.sass',
   cssPath: 'dist/css/*.css',
-  cssMinifiedPath: 'dist/css/minified'
+  cssMinifiedPath: 'dist/css/minified',
+  htmlPath: 'dist/*.html',
+  jsspath: 'src/js/*.js'
+}
+
+function jsTask() {
+  return src(files.jsspath)
+    .pipe(uglify())
+    .pipe(dest('dist/js/'));
 }
 
 function compileSASS() {
@@ -27,8 +37,8 @@ function minifyCSS() {
 
 function watchTask() {
   watch(
-    [files.sassPath, files.cssMinifiedPath],
-    series(compileSASS, minifyCSS, reloadTask)
+    [files.sassPath, files.cssMinifiedPath, files.htmlPath, files.jsspath],
+    series(compileSASS, minifyCSS, jsTask, reloadTask)
   )
   console.log('watchTask')
 }
@@ -48,7 +58,7 @@ function reloadTask(d) {
   d();
 }
 
-exports.default = series(compileSASS, minifyCSS, serveTask, watchTask)
+exports.default = series(compileSASS, minifyCSS, jsTask, serveTask, watchTask)
 
 
 // exports.sass = compileSASS;
